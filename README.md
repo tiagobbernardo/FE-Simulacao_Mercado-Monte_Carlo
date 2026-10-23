@@ -53,11 +53,7 @@ $$
 $$
 
 ### Cálculo do Ponto de Equilíbrio
-A **transição de regime** (onde a magnitude do sinal advectivo se sobrepõe à amplitude do ruído difusivo) ocorre no **Tempo Crítico ($t^*$)**:
-
-$$
-\mu_{\text{efetivo}} \cdot t^* = \sigma \sqrt{t^*} \implies t^* = \left( \frac{\sigma}{\mu_{\text{efetivo}}} \right)^2
-$$
+A **transição de regime** (onde a magnitude do sinal advectivo se sobrepõe à amplitude do ruído difusivo) ocorre no **Tempo Crítico ($t^*$)**:$$\mu_{\text{efetivo}} \cdot t^* = \sigma \sqrt{t^*} \implies t^* = \left( \frac{\sigma}{\mu_{\text{efetivo}}} \right)^2$$
 
 * **Para $t < t^*$:** O sistema encontra-se num estado termodinâmico de elevada entropia relativa, indistinguível de puro ruído térmico.
 * **Para $t > t^*$:** A componente advectiva rompe a barreira estocástica, elevando a probabilidade de deslocamento positivo rumo aos $100\%$.
