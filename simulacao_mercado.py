@@ -45,6 +45,7 @@ plt.figure(figsize=(10, 6))
 for i in range(min(500, N_simulacoes)):
     plt.plot(tempos, precos[i, :], lw=1, alpha=0.08, color=base)
 
+plt.xlim(0,1)
 preco_medio = np.mean(precos, axis=0)
 plt.plot(tempos, preco_medio, lw=2.5, color=escuro, label='Trajetória Média Esperada')
 
