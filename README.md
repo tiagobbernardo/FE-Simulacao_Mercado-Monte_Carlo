@@ -39,29 +39,31 @@ $$
 ### Macroestados (Distribuição de Posições Finais $S_T$)
 Devido à natureza multiplicativa do processo estocástico, a integração temporal dos microestados gaussianos resulta numa **Distribuição Lognormal** para os macroestados finais $S_T$. Esta distribuição apresenta uma forte assimetria positiva, onde o valor médio do ensemble excede a sua mediana.
 
-## 3. Transição de Fase: O Tempo Crítico ($t^*$)
+## 3. Transição de Fase: O Tempo Crítico ($t^{*}$)
 
 O comportamento macroscópico do sistema é determinado pelo confronto dinâmico entre duas forças em escalas temporais distintas:
 
 * **Força Advectiva / Sinal (Crescimento Linear):** $\text{Sinal}(t) = \mu_{\text{efetivo}} \cdot t$
+
 * **Força Difusiva / Ruído (Crescimento em Raiz Quadrada):** $\text{Ruído}(t) = \sigma \sqrt{t}$
 
 No limite microscópico ($t \ll 1$), a taxa de variação da componente difusiva diverge em relação à componente advectiva, dominando completamente o sistema:
 
 $$
-\lim_{t \to 0^+} \frac{\text{Ruído}(t)}{\text{Sinal}(t)} = \lim_{t \to 0^+} \frac{\sigma \sqrt{t}}{\mu_{\text{efetivo}} t} = \infty
+\lim_{t \to 0^{+}} \frac{\text{Ruído}(t)}{\text{Sinal}(t)} = \lim_{t \to 0^{+}} \frac{\sigma \sqrt{t}}{\mu_{\text{efetivo}} t} = \infty
 $$
 
 ### Cálculo do Ponto de Equilíbrio
 
-A **transição de regime** (onde a magnitude do sinal advectivo iguala a amplitude do ruído difusivo) ocorre no **Tempo Crítico ($t^*$)**:
+A **transição de regime** (onde a magnitude do sinal advectivo se sobrepõe à amplitude do ruído difusivo) ocorre no **Tempo Crítico (**$t^{*}$**)**:
 
 $$
-\mu_{\text{efetivo}} \cdot t^* = \sigma \sqrt{t^*} \implies t^* = \left( \frac{\sigma}{\mu_{\text{efetivo}}} \right)^2
+\mu_{\text{efetivo}} \cdot t^{*} = \sigma \sqrt{t^{*}} \implies t^{*} = \left( \frac{\sigma}{\mu_{\text{efetivo}}} \right)^2
 $$
 
-* **Para $t < t^*$:** O sistema encontra-se num estado termodinâmico de elevada entropia relativa, indistinguível de puro ruído térmico.
-* **Para $t > t^*$:** A componente advectiva rompe a barreira estocástica, elevando a probabilidade de deslocamento positivo rumo aos 100%.
+* **Para** $t < t^{*}$**:** O sistema encontra-se num estado termodinâmico de elevada entropia relativa, indistinguível de puro ruído térmico.
+
+* **Para** $t > t^{*}$**:** A componente advectiva rompe a barreira estocástica, elevando a probabilidade de deslocamento positivo rumo aos $100\%$.
 
 ## 4. Análise de Risco e Estados Absorventes
 
