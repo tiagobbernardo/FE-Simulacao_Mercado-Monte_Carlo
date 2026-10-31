@@ -16,8 +16,8 @@ branco = "#E8FCFC"
 # 1. PARÂMETROS GLOBAIS DO MERCADO
 # ==========================================
 S0 = 171.32                     # Preço inicial do ativo
-mu = 0.097                      # Tendência de crescimento (drift)
-sigma = 0.130                   # Volatilidade (temperatura/agitação)
+mu = 0.111338                   # Tendência de crescimento (drift)
+sigma = 0.137911                # Volatilidade (temperatura/agitação)
 T = 1                           # Horizonte temporal
 dias_uteis = 252                # Dias úteis do mercado financeiro
 N_passos = int(dias_uteis*T)    # Resolução
