@@ -73,14 +73,17 @@ Em sistemas com limites estritos (ex: fronteiras de absorção *Stop-Loss* a -20
 
 ## 7. Mapeamento das Visualizações Científicas
 
-O motor numérico exporta automaticamente 9 outputs analíticos normalizados (Paleta de Cores: *Teal*):
+O motor numérico exporta automaticamente 12 gráficos analíticos para a pasta `Gráficos/` (paleta de cores: *Teal*):
 
-1. **`01_trajetorias_mercado.png`**: Evolução temporal de um ensemble de trajetórias de difusão normal e cálculo do valor médio esperado.
-2. **`02_distribuicao_final.png`**: Convergência empírica da densidade de probabilidade para a Curva Lognormal teórica em $T=1$.
-3. **`03_distribuicao_retornos.png`**: Confirmação da simetria Gaussiana termodinâmica dos microestados do sistema.
-4. **`04_drawdowns_maximos.png`**: Impacto da dimensão fractal no risco extremo (Paradoxo Subdifusivo nos Drawdowns).
-5. **`05_probabilidade_lucro_tempo.png`**: O Paradoxo do Tempo e a evolução da probabilidade determinística $P(S_T > S_0)$.
-6. **`06_sinal_vs_ruido.png`**: Análise em escala Log-Log ilustrando o Colapso Termodinâmico e o desvio matemático do Tempo Crítico ($t^*$).
-7. **`07_difusao_fracionaria.png`**: Trajetória isolada da mesma partícula (mesma sequência exata de choques térmicos) em 3 geometrias espaciais diferentes.
-8. **`08_fuga_kramers.png`**: Histogramas dos Tempos de Primeira Passagem modelando a resiliência à absorção fronteiriça.
-9. **`09_destino_particulas.png`**: Gráfico de barras ilustrando a assimetria na dispersão de Kramers e a distribuição final (Profit vs. Loss vs. Presas no poço).
+1. **`Gráficos/01_trajetorias_mercado.png`**: Evolução temporal de um ensemble de trajetórias de difusão normal e cálculo do valor médio esperado.
+2. **`Gráficos/02_distribuicao_final.png`**: Convergência empírica da densidade de probabilidade para a Curva Lognormal teórica em $T=1$.
+3. **`Gráficos/03_distribuicao_retornos.png`**: Confirmação da simetria Gaussiana termodinâmica dos microestados do sistema.
+4. **`Gráficos/04_drawdowns_maximos.png`**: Impacto da dimensão fractal no risco extremo (Paradoxo Subdifusivo nos Drawdowns).
+5. **`Gráficos/05_probabilidade_lucro_tempo.png`**: O Paradoxo do Tempo e a evolução da probabilidade determinística $P(S_T > S_0)$.
+6. **`Gráficos/06_sinal_vs_ruido.png`**: Análise em escala Log-Log ilustrando o Colapso Termodinâmico e o desvio matemático do Tempo Crítico ($t^*$).
+7. **`Gráficos/07_difusao_fracionaria.png`**: Trajetória isolada da mesma partícula (mesma sequência exata de choques térmicos) em 3 geometrias espaciais diferentes.
+8. **`Gráficos/08_fuga_kramers.png`**: Histogramas dos Tempos de Primeira Passagem modelando a resiliência à absorção fronteiriça.
+9. **`Gráficos/09_destino_particulas.png`**: Gráfico de barras ilustrando a assimetria na dispersão de Kramers e a distribuição final (Profit vs. Loss vs. Presas no poço).
+10. **`Gráficos/10_deslocamento_quadratico_medio.png`**: Variância do deslocamento estocástico ao longo do tempo, comparando os regimes de difusão em escala log-log e os seus expoentes teóricos.
+11. **`Gráficos/11_autocorrelacao_microestados.png`**: Autocorrelação de lag 1 dos incrementos logarítmicos, comparando a antipersistência subdifusiva, a difusão normal e a persistência superdifusiva.
+12. **`Gráficos/12_entropia_shannon.png`**: Evolução temporal da entropia de Shannon do ensemble de preços nos três regimes.
