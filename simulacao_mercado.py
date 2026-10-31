@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-from matplotlib.colors import LinearSegmentedColormap
+from scipy.stats import entropy
 
 print("\nA INICIAR SIMULAÇÃO ...\n")
 
@@ -33,31 +33,32 @@ H_sup = 0.75  # Superdifusão (Inércia/Manada)
 # ==========================================
 # 2. MOTOR DE MONTE CARLO (3 REGIMES - CHOLESKY)
 # ==========================================
-print(f"[1/10] A processar Motor de Monte Carlo (3 Regimes x {N_simulacoes} trajetórias)...")
+print(f"[1/13] A processar Motor de Monte Carlo (3 Regimes x {N_simulacoes} trajetórias)...")
 
-def gerar_universos_fbm(H, S0, mu, sigma, T, N_passos, N_sims):
+rng = np.random.RandomState(42)
+Z = rng.standard_normal((N_passos, N_simulacoes))
+Z[0, :] = 0
+
+def gerar_universos_fbm(H, S0, mu, sigma, T, N_passos, Z):
     t = np.linspace(0, T, N_passos)
-    Cov = np.zeros((N_passos, N_passos))
-    
-    for i in range(N_passos):
-        for j in range(N_passos):
-            Cov[i, j] = 0.5 * (t[i]**(2*H) + t[j]**(2*H) - np.abs(t[i] - t[j])**(2*H))
-            
+    t_power = t**(2*H)
+    Cov = 0.5 * (
+        t_power[:, np.newaxis]
+        + t_power[np.newaxis, :]
+        - np.abs(t[:, np.newaxis] - t[np.newaxis, :])**(2*H)
+    )
     Cov += np.eye(N_passos) * 1e-8 # Estabilidade numérica
     L = np.linalg.cholesky(Cov)
-    
-    np.random.seed(42) # Mesma perturbação térmica para todos os universos
-    Z = np.random.standard_normal((N_passos, N_sims))
-    Z[0, :] = 0
+
     W_H = np.dot(L, Z).T
     
     t_matrix = t.reshape(1, -1)
     precos = S0 * np.exp(mu * t_matrix - 0.5 * (sigma**2) * (t_matrix**(2*H)) + sigma * W_H)
     return t, precos
 
-tempos, precos_sub  = gerar_universos_fbm(H_sub, S0, mu, sigma, T, N_passos, N_simulacoes)
-_, precos_norm = gerar_universos_fbm(H_norm, S0, mu, sigma, T, N_passos, N_simulacoes)
-_, precos_sup  = gerar_universos_fbm(H_sup, S0, mu, sigma, T, N_passos, N_simulacoes)
+tempos, precos_sub  = gerar_universos_fbm(H_sub, S0, mu, sigma, T, N_passos, Z)
+_, precos_norm = gerar_universos_fbm(H_norm, S0, mu, sigma, T, N_passos, Z)
+_, precos_sup  = gerar_universos_fbm(H_sup, S0, mu, sigma, T, N_passos, Z)
 
 # O modelo normal abastece os gráficos clássicos
 precos = precos_norm 
@@ -66,10 +67,9 @@ print("      -> Concluído.\n")
 # ==========================================
 # 3. VISUALIZAÇÃO 1: CENÁRIOS DE MERCADO
 # ==========================================
-print("[2/10] A gerar Gráfico 1 (Cenários de Mercado)...")
+print("[2/13] A gerar Gráfico 1 (Cenários de Mercado)...")
 plt.figure(figsize=(10, 6))
-for i in range(min(500, N_simulacoes)):
-    plt.plot(tempos, precos[i, :], lw=1, alpha=0.08, color=base)
+plt.plot(tempos, precos[:min(500, N_simulacoes), :].T, lw=1, alpha=0.08, color=base)
 
 plt.xlim(0, T)
 preco_medio = np.mean(precos, axis=0)
@@ -80,14 +80,14 @@ plt.xlabel('Tempo (Anos)')
 plt.ylabel('Preço do Ativo')
 plt.legend()
 plt.grid(alpha=0.3)
-plt.savefig('01_trajetorias_mercado.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/01_trajetorias_mercado.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '01_trajetorias_mercado.png'.\n")
 
 # ==========================================
 # 4. VISUALIZAÇÃO 2: DISTRIBUIÇÃO LOGNORMAL (PREÇOS)
 # ==========================================
-print("[3/10] A gerar Gráfico 2 (Distribuição Lognormal)...")
+print("[3/13] A gerar Gráfico 2 (Distribuição Lognormal)...")
 precos_finais = precos[:, -1] 
 
 plt.figure(figsize=(10, 6))
@@ -105,16 +105,16 @@ plt.xlabel('Preço Final do Ativo')
 plt.ylabel('Densidade de Probabilidade')
 plt.legend()
 plt.grid(alpha=0.3)
-plt.savefig('02_distribuicao_final.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/02_distribuicao_final.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '02_distribuicao_final.png'.\n")
 
 # ==========================================
 # 5. ANÁLISE DE MICROESTADOS: RETORNOS LOGARÍTMICOS
 # ==========================================
-print("[4/10] A gerar Gráfico 3 (Termodinâmica e Retornos)...")
+print("[4/13] A gerar Gráfico 3 (Termodinâmica e Retornos)...")
 retornos_diarios = np.log(precos[:, 1:] / precos[:, :-1])
-todos_retornos = retornos_diarios.flatten() 
+todos_retornos = retornos_diarios.ravel()
 
 plt.figure(figsize=(10, 6))
 plt.hist(todos_retornos, bins=100, density=True, alpha=0.6, color=base, edgecolor=escuro, label='Retornos Diários Simulados')
@@ -131,14 +131,14 @@ plt.xlabel('Retorno Logarítmico Diário')
 plt.ylabel('Densidade')
 plt.legend()
 plt.grid(alpha=0.3)
-plt.savefig('03_distribuicao_retornos.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/03_distribuicao_retornos.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '03_distribuicao_retornos.png'.\n")
 
 # ==========================================
 # 6. ANÁLISE DE RISCO: MAXIMUM DRAWDOWN (OS 3 REGIMES)
 # ==========================================
-print("[5/10] A gerar Gráfico 4 (Maximum Drawdown Comparativo)...")
+print("[5/13] A gerar Gráfico 4 (Maximum Drawdown Comparativo)...")
 def calcular_drawdowns(matriz):
     picos = np.maximum.accumulate(matriz, axis=1)
     dds = (matriz - picos) / picos
@@ -158,14 +158,14 @@ plt.xlabel('Drawdown Máximo (%)')
 plt.ylabel('Densidade')
 plt.legend(loc='upper left')
 plt.grid(alpha=0.3)
-plt.savefig('04_drawdowns_maximos.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/04_drawdowns_maximos.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '04_drawdowns_maximos.png'.\n")
 
 # ==========================================
 # 7. A CURVA DO TEMPO: 0 DIAS vs 20 ANOS
 # ==========================================
-print("[6/10] A gerar Gráfico 5 (Probabilidade no Tempo)...")
+print("[6/13] A gerar Gráfico 5 (Probabilidade no Tempo)...")
 T_dias = np.arange(0, 20 * 252 + 1)
 T_anos = T_dias / 252
 
@@ -197,14 +197,14 @@ plt.xlabel('Horizonte Temporal $T$ (Anos)')
 plt.ylabel('Probabilidade de Lucro (%)')
 plt.legend(loc='lower right')
 plt.grid(alpha=0.3)
-plt.savefig('05_probabilidade_lucro_tempo.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/05_probabilidade_lucro_tempo.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '05_probabilidade_lucro_tempo.png'.\n")
 
 # ==========================================
 # 8. A ESCALA MICROSCÓPICA: SINAL VS RUÍDO (3 REGIMES)
 # ==========================================
-print("[7/10] A gerar Gráfico 6 (Colapso Termodinâmico: Sinal vs Ruído)...")
+print("[7/13] A gerar Gráfico 6 (Colapso Termodinâmico: Sinal vs Ruído)...")
 minutos_por_ano = 252 * 6.5 * 60
 t_minutos = np.logspace(0, np.log10(10 * minutos_por_ano), 500)
 t_anos_array = t_minutos / minutos_por_ano
@@ -250,14 +250,14 @@ plt.xlabel('Horizonte Temporal (Escala Logarítmica de Anos)')
 plt.ylabel('Magnitude da Força no Preço')
 plt.legend(loc='upper left')
 plt.grid(alpha=0.2, which='both')
-plt.savefig('06_sinal_vs_ruido.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/06_sinal_vs_ruido.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '06_sinal_vs_ruido.png'.\n")
 
 # ==========================================
 # 9. A ESCALA MACROSCÓPICA: TRAJETÓRIA COMPARATIVA
 # ==========================================
-print("[8/10] A gerar Gráfico 7 (Trajetória de Partícula Única)...")
+print("[8/13] A gerar Gráfico 7 (Trajetória de Partícula Única)...")
 plt.figure(figsize=(10, 6))
 
 plt.plot(tempos, precos_sub[0, :], color=claro, lw=2.5, label='Subdifusão: Reversão / Mola')
@@ -270,38 +270,39 @@ plt.xlabel('Tempo (Anos)')
 plt.ylabel('Preço do Ativo ($S_t$)')
 plt.legend(loc='upper left')
 plt.grid(alpha=0.3)
-plt.savefig('07_difusao_fracionaria.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/07_difusao_fracionaria.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '07_difusao_fracionaria.png'.\n")
 
 # ==========================================
 # 10. A ESCALA DE KRAMERS: TEMPOS DE PRIMEIRA PASSAGEM
 # ==========================================
-print("[9/10] A gerar Gráfico 8 (Tempos de Primeira Passagem / Fuga de Kramers)...")
+print("[9/13] A gerar Gráfico 8 (Tempos de Primeira Passagem / Fuga de Kramers)...")
 
 # Definir os limites do "Poço de Potencial" (Fronteiras Absorventes)
 limite_sup = S0 * 1.30  # +30% (Take-Profit / Escape Superior)
 limite_inf = S0 * 0.80  # -20% (Stop-Loss / Escape Inferior)
 
-def calcular_tempos_fuga(matriz_precos, tempos_array):
-    # Detetar colisões com os limites
+def analisar_primeiras_colisoes(matriz_precos, tempos_array):
     colisoes = (matriz_precos >= limite_sup) | (matriz_precos <= limite_inf)
-    # Identificar quais as simulações que colidiram pelo menos uma vez
     colidiu = np.any(colisoes, axis=1)
-    # Identificar o índice temporal da PRIMEIRA colisão
     indices_fuga = np.argmax(colisoes, axis=1)
-    
-    # Extrair os tempos exatos apenas das partículas que conseguiram escapar
-    tempos_fuga = tempos_array[indices_fuga[colidiu]]
-    
-    # Calcular percentagem de partículas que ficaram presas no poço até ao final de T=1
-    taxa_sobrevivencia = 100 - (np.sum(colidiu) / len(matriz_precos) * 100)
-    
-    return tempos_fuga, taxa_sobrevivencia
+    indices_colisoes = np.flatnonzero(colidiu)
 
-fuga_sub, surv_sub = calcular_tempos_fuga(precos_sub, tempos)
-fuga_norm, surv_norm = calcular_tempos_fuga(precos_norm, tempos)
-fuga_sup, surv_sup = calcular_tempos_fuga(precos_sup, tempos)
+    tempos_fuga = tempos_array[indices_fuga[colidiu]]
+    precos_fuga = matriz_precos[indices_colisoes, indices_fuga[colidiu]]
+    taxa_lucro = np.count_nonzero(precos_fuga >= limite_sup) / len(matriz_precos) * 100
+    taxa_ruina = np.count_nonzero(precos_fuga <= limite_inf) / len(matriz_precos) * 100
+    taxa_sobrevivencia = 100 - (np.sum(colidiu) / len(matriz_precos) * 100)
+
+    return tempos_fuga, taxa_sobrevivencia, taxa_lucro, taxa_ruina
+
+fuga_sub, surv_sub, l_sub, r_sub = analisar_primeiras_colisoes(precos_sub, tempos)
+fuga_norm, surv_norm, l_norm, r_norm = analisar_primeiras_colisoes(precos_norm, tempos)
+fuga_sup, surv_sup, l_sup, r_sup = analisar_primeiras_colisoes(precos_sup, tempos)
+s_sub = 100 - (l_sub + r_sub)
+s_norm = 100 - (l_norm + r_norm)
+s_sup = 100 - (l_sup + r_sup)
 
 plt.figure(figsize=(10, 6))
 
@@ -323,41 +324,14 @@ plt.legend(loc='upper right')
 plt.grid(alpha=0.3)
 plt.xlim(0, T)
 
-plt.savefig('08_fuga_kramers.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/08_fuga_kramers.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '08_fuga_kramers.png'.\n")
 
 # ==========================================
 # 11. O DESTINO DAS PARTÍCULAS (PROFIT VS LOSS)
 # ==========================================
-print("[10/10] A gerar Gráfico 9 (Análise de Destino: Profit vs Loss)...")
-
-def analisar_destinos(matriz_precos):
-    colisoes_sup = matriz_precos >= limite_sup
-    colisoes_inf = matriz_precos <= limite_inf
-    colisoes_qualquer = colisoes_sup | colisoes_inf
-    
-    colidiu = np.any(colisoes_qualquer, axis=1)
-    indices_fuga = np.argmax(colisoes_qualquer, axis=1)
-    
-    lucros, ruinas = 0, 0
-    
-    for i in range(len(matriz_precos)):
-        if colidiu[i]:
-            if matriz_precos[i, indices_fuga[i]] >= limite_sup:
-                lucros += 1
-            else:
-                ruinas += 1
-                
-    taxa_lucro = (lucros / len(matriz_precos)) * 100
-    taxa_ruina = (ruinas / len(matriz_precos)) * 100
-    taxa_sobrev = 100 - (taxa_lucro + taxa_ruina)
-    
-    return taxa_lucro, taxa_ruina, taxa_sobrev
-
-l_sub, r_sub, s_sub = analisar_destinos(precos_sub)
-l_norm, r_norm, s_norm = analisar_destinos(precos_norm)
-l_sup, r_sup, s_sup = analisar_destinos(precos_sup)
+print("[10/13] A gerar Gráfico 9 (Análise de Destino: Profit vs Loss)...")
 
 plt.figure(figsize=(10, 6))
 
@@ -402,8 +376,123 @@ plt.ylabel('Percentagem do Ensamble (%)')
 plt.legend(loc='center left', bbox_to_anchor=(1.02, 0.5))
 plt.grid(alpha=0.2, axis='y')
 
-plt.savefig('09_destino_particulas.png', dpi=300, bbox_inches='tight')
+plt.savefig('Gráficos/09_destino_particulas.png', dpi=300, bbox_inches='tight')
 plt.close()
 print("      -> Exportado como '09_destino_particulas.png'.\n")
+
+# ==========================================
+# 12. FÍSICA ESTATÍSTICA: DESLOCAMENTO QUADRÁTICO MÉDIO (MSD)
+# ==========================================
+print("[11/13] A gerar Gráfico 10 (Deslocamento Quadrático Médio - MSD)...")
+
+# Isolamos a componente puramente estocástica (retirando o drift determinístico)
+X_sub = np.log(precos_sub / S0) - (mu - 0.5 * sigma**2) * tempos
+X_norm = np.log(precos_norm / S0) - (mu - 0.5 * sigma**2) * tempos
+X_sup = np.log(precos_sup / S0) - (mu - 0.5 * sigma**2) * tempos
+
+# A variância espacial em cada instante de tempo (MSD)
+msd_sub = np.var(X_sub, axis=0)
+msd_norm = np.var(X_norm, axis=0)
+msd_sup = np.var(X_sup, axis=0)
+
+plt.figure(figsize=(10, 6))
+
+# Ignoramos t=0 para evitar log(0)
+t_msd = tempos[1:]
+plt.plot(t_msd, msd_sub[1:], color=claro, lw=2.5, label=rf'Subdifusão (Declive Teórico $\sim t^{{{2*H_sub}}})$')
+plt.plot(t_msd, msd_norm[1:], color=base, lw=2.5, label=rf'Difusão Normal (Declive Teórico $\sim t^{{{2*H_norm}}})$')
+plt.plot(t_msd, msd_sup[1:], color=escuro, lw=2.5, label=rf'Superdifusão (Declive Teórico $\sim t^{{{2*H_sup}}})$')
+
+plt.xscale('log')
+plt.yscale('log')
+plt.title('Dispersão Espacial: Deslocamento Quadrático Médio (MSD)')
+plt.xlabel('Tempo (Anos) - Escala Logarítmica')
+plt.ylabel(r'Variância Estocástica $\langle x^2(t) \rangle$ - Escala Log')
+plt.legend(loc='upper left')
+plt.grid(alpha=0.3, which='both')
+
+plt.savefig('Gráficos/10_deslocamento_quadratico_medio.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("      -> Exportado como '10_deslocamento_quadratico_medio.png'.\n")
+
+
+# ==========================================
+# 13. FÍSICA ESTATÍSTICA: AUTOCORRELAÇÃO DOS MICROESTADOS (fGn)
+# ==========================================
+print("[12/13] A gerar Gráfico 11 (Autocorrelação e Memória)...")
+
+def calcular_autocorrelacao_lag1(matriz_precos):
+    # Calcula os incrementos (retornos logarítmicos) de todas as trajetórias
+    incrementos = np.log(matriz_precos[:, 1:] / matriz_precos[:, :-1])
+    correlacoes = []
+    # Correlação entre o incremento t e o incremento t+1 para cada trajetória
+    for i in range(len(incrementos)):
+        if np.std(incrementos[i, :-1]) > 0 and np.std(incrementos[i, 1:]) > 0:
+            corr = np.corrcoef(incrementos[i, :-1], incrementos[i, 1:])[0, 1]
+            correlacoes.append(corr)
+    return np.mean(correlacoes)
+
+corr_sub = calcular_autocorrelacao_lag1(precos_sub)
+corr_norm = calcular_autocorrelacao_lag1(precos_norm)
+corr_sup = calcular_autocorrelacao_lag1(precos_sup)
+
+plt.figure(figsize=(10, 6))
+barras = plt.bar(['Subdifusão\n(Fricção/Mola)', 'Difusão Normal\n(Markov)', 'Superdifusão\n(Inércia)'], 
+                 [corr_sub, corr_norm, corr_sup], 
+                 color=[claro, base, escuro], edgecolor=negro, width=0.5)
+
+plt.axhline(0, color=negro, lw=1)
+
+# Adicionar os valores exatos em cima/baixo das barras
+for bar in barras:
+    yval = bar.get_height()
+    pos = yval + 0.02 if yval > 0 else yval - 0.03
+    plt.text(bar.get_x() + bar.get_width()/2, pos, f"{yval:.3f}", ha='center', va='center', weight='bold', color=negro)
+
+plt.title('Memória Microscópica: Autocorrelação de Incrementos (Lag-1)')
+plt.ylabel('Coeficiente de Autocorrelação (Pearson)')
+plt.ylim(-0.5, 0.5)
+plt.grid(alpha=0.2, axis='y')
+
+plt.savefig('Gráficos/11_autocorrelacao_microestados.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("      -> Exportado como '11_autocorrelacao_microestados.png'.\n")
+
+
+# ==========================================
+# 14. TERMODINÂMICA DA INFORMAÇÃO: ENTROPIA DE SHANNON
+# ==========================================
+print("[13/13] A gerar Gráfico 12 (Evolução da Entropia de Shannon)...")
+
+def entropia_temporal(matriz_precos):
+    entropias = []
+    # Calculamos a entropia do ensamble a cada 5 passos de tempo para fluidez
+    passos = range(1, matriz_precos.shape[1], 5)
+    for t_idx in passos:
+        counts, _ = np.histogram(matriz_precos[:, t_idx], bins=50, density=True)
+        counts = counts[counts > 0] # Evitar log(0)
+        entropias.append(entropy(counts, base=2))
+    return tempos[list(passos)], np.array(entropias)
+
+t_ent, ent_sub = entropia_temporal(precos_sub)
+_, ent_norm = entropia_temporal(precos_norm)
+_, ent_sup = entropia_temporal(precos_sup)
+
+plt.figure(figsize=(10, 6))
+
+plt.plot(t_ent, ent_sub, color=claro, lw=2.5, label='Subdifusão')
+plt.plot(t_ent, ent_norm, color=base, lw=2.5, label='Difusão Normal')
+plt.plot(t_ent, ent_sup, color=escuro, lw=2.5, label='Superdifusão')
+
+plt.title('A Seta do Tempo: Evolução da Entropia de Shannon no Ensamble')
+plt.xlabel('Tempo (Anos)')
+plt.ylabel('Entropia (Bits de Informação)')
+plt.legend(loc='lower right')
+plt.grid(alpha=0.3)
+plt.xlim(0, T)
+
+plt.savefig('Gráficos/12_entropia_shannon.png', dpi=300, bbox_inches='tight')
+plt.close()
+print("      -> Exportado como '12_entropia_shannon.png'.\n")
 
 print("Simulação Concluída")
