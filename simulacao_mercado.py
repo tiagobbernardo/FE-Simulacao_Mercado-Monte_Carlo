@@ -3,7 +3,13 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 from scipy.stats import entropy
 
-print("\nA INICIAR SIMULAÇÃO ...\n")
+plt.rcParams.update({
+    "axes.titlesize": 21.6,
+    "axes.labelsize": 16,
+    "xtick.labelsize": 12,
+    "ytick.labelsize": 12,
+    "legend.fontsize": 12,
+})
 
 # Cores
 base = "#17B0B0"
@@ -11,6 +17,8 @@ claro = "#97F2F2"
 escuro = "#083F3F"
 negro = "#031717"
 branco = "#E8FCFC"
+
+print("\nA INICIAR SIMULAÇÃO ...\n")
 
 # ==========================================
 # 1. PARÂMETROS GLOBAIS DO MERCADO
