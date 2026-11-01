@@ -1,10 +1,10 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2026.10.31)  31 OCT 2026 19:18
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2026.10.31)  1 NOV 2026 20:22
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/workspaces/FE-Econof-sica_MonteCarloSIM/relatório
-(/workspaces/FE-Econof-sica_MonteCarloSIM/relatório.tex
+**/workspaces/FE-Econof-sica_MonteCarloSIM/Relatório/relatório
+(/workspaces/FE-Econof-sica_MonteCarloSIM/Relatório/relatório.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
@@ -482,8 +482,8 @@ Package hyperref Info: Link coloring ON on input line 20.
 \@outlinefile=\write3
 \openout3 = `relatório.out'.
 
-File: ISELlogo.png Graphic file (type bmp)
-<ISELlogo.png>
+File: ../ISELlogo.png Graphic file (type bmp)
+<../ISELlogo.png>
  [1
 
 ] (./relatório.toc
@@ -499,20 +499,20 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 \openout4 = `relatório.toc'.
 
  [1] [1]
-File: ./Gráficos/01_trajetorias_mercado.png Graphic file (type bmp)
-<./Gráficos/01_trajetorias_mercado.png>
+File: ../Gráficos/01_trajetorias_mercado.png Graphic file (type bmp)
+<../Gráficos/01_trajetorias_mercado.png>
  [2]
-File: ./Gráficos/07_difusao_fracionaria.png Graphic file (type bmp)
-<./Gráficos/07_difusao_fracionaria.png>
-File: ./Gráficos/10_deslocamento_quadratico_medio.png Graphic file (type bmp)
-<./Gráficos/10_deslocamento_quadratico_medio.png>
-File: ./Gráficos/11_autocorrelacao_microestados.png Graphic file (type bmp)
-<./Gráficos/11_autocorrelacao_microestados.png>
-File: ./Gráficos/08_fuga_kramers.png Graphic file (type bmp)
-<./Gráficos/08_fuga_kramers.png>
+File: ../Gráficos/07_difusao_fracionaria.png Graphic file (type bmp)
+<../Gráficos/07_difusao_fracionaria.png>
+File: ../Gráficos/10_deslocamento_quadratico_medio.png Graphic file (type bmp)
+<../Gráficos/10_deslocamento_quadratico_medio.png>
+File: ../Gráficos/11_autocorrelacao_microestados.png Graphic file (type bmp)
+<../Gráficos/11_autocorrelacao_microestados.png>
+File: ../Gráficos/08_fuga_kramers.png Graphic file (type bmp)
+<../Gráficos/08_fuga_kramers.png>
  [3] [4]
-File: ./Gráficos/12_entropia_shannon.png Graphic file (type bmp)
-<./Gráficos/12_entropia_shannon.png>
+File: ../Gráficos/12_entropia_shannon.png Graphic file (type bmp)
+<../Gráficos/12_entropia_shannon.png>
  [5] [6] (./relatório.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
@@ -522,12 +522,12 @@ Package rerunfilecheck Info: File `relatório.out' has not changed.
 (rerunfilecheck)             Checksum: 291258CFCC98CE78E0105E1A05EC8B52;2750.
  ) 
 Here is how much of TeX's memory you used:
- 13962 strings out of 476834
- 270677 string characters out of 5803423
+ 13963 strings out of 476834
+ 270783 string characters out of 5803423
  1929627 words of memory out of 5000000
  35689 multiletter control sequences out of 15000+600000
  563301 words of font info for 83 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 79i,6n,93p,716b,469s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 79i,6n,93p,726b,469s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on relatório.pdf (8 pages).
