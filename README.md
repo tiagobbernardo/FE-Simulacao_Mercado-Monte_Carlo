@@ -106,8 +106,8 @@ Implementada sobre uma grelha espacial fixa ($M = 80$ intervalos), observa-se o 
 | Parâmetro | Significado Físico / Estatístico | Valor Calibrado |
 | :---: | :--- | :---: |
 | $S_0$ | Estado Inicial do Sistema | $171.32$ |
-| $\mu$ | Coeficiente de Advecção (Drift / Força Determinística) | $0.111338\text{ ano}^{-1}$ ($11.13\%/\text{ano}$) |
-| $\sigma$ | Coeficiente de Difusão (Temperatura do Banho / Volatilidade) | $0.137911\text{ ano}^{-1}$ ($13.79\%/\text{ano}$) |
+| $\mu$ | Coeficiente de Advecção (Drift / Força Determinística) | $0.1113\text{/ano}$ ($11.13\%/\text{ano}$) |
+| $\sigma$ | Coeficiente de Difusão (Temperatura do Banho / Volatilidade) | $0.1379\text{/ano}$ ($13.79\%/\text{ano}$) |
 | $H$ | Expoente de Hurst | $0.25 \mid 0.50 \mid 0.75$ |
 | $D_f$ | Dimensão Fractal ($2 - H$) | $1.75 \mid 1.50 \mid 1.25$ |
 | $T$ | Horizonte Temporal de Simulação | $1.0\text{ ano}$ |
@@ -150,17 +150,6 @@ O simulador exporta 12 figuras a 300 DPI para o diretório `Gráficos/`:
     ├── ISELlogo.png         # Emblema institucional
     ├── relatorio.tex        # Código-fonte LaTeX (XeLaTeX)
     └── relatorio.pdf        # Relatório final compilado (8 páginas)
-```
-
-### Reprodução da Simulação e Compilação
-```bash
-# 1. Executar a simulação numérica e gerar os 12 gráficos
-python simulacao_mercado.py
-
-# 2. Compilar o relatório académico em XeLaTeX (dupla compilação para resolver referências cruzadas)
-cd Relatório
-xelatex -interaction=nonstopmode relatorio.tex
-xelatex -interaction=nonstopmode relatorio.tex
 ```
 
 ---
